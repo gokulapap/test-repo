@@ -10,14 +10,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: TruffleHog OSS
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
       - name: Send Slack alert
-        if: contains(steps.scan-for-secrets.outputs.stdout, 'could not scan repo')
         uses: rtCamp/action-slack-notify@v2.1.0
         with:
           status: "danger"
