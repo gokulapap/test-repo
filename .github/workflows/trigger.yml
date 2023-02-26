@@ -10,10 +10,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Scan for secrets
-        uses: dxa4481/truffleHog-action@v1.1.0
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
         with:
-          path: .
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
       - name: Send Slack alert
         if: ${{ steps.scan-for-secrets.outputs.has_secrets == 'true' }}
         uses: rtCamp/action-slack-notify@v2.1.0
@@ -24,3 +26,4 @@ jobs:
           text: ${{ steps.scan-for-secrets.outputs.results }}
         env:
           SLACK_WEBHOOK: https://hooks.slack.com/services/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
+          
