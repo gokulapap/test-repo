@@ -10,10 +10,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Send Slack alert
-        uses: rtCamp/action-slack-notify@v2.1.0
-        with:
-          text: "hello world"
+      - name: Slack Notify
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: "https://hooks.slack.com/services/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"
-          
+          SLACK_USERNAME: "gokul"
+          SLACK_ICON: https://www.google.com
+          SLACK_TITLE: Ive published a new release 🚀
