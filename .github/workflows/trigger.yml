@@ -13,9 +13,6 @@ jobs:
       - name: Send Slack alert
         uses: rtCamp/action-slack-notify@v2.1.0
         with:
-          status: "danger"
-          author_name: "gokul"
-          title: "Secrets found in PR ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${{ github.event.number }}"
           text: "hello world"
         env:
           SLACK_WEBHOOK: "https://hooks.slack.com/services/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"
