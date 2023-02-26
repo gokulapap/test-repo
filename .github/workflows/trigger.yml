@@ -1,0 +1,26 @@
+name: Scan for secrets and send Slack alert
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  scan-for-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Scan for secrets
+        uses: dxa4481/truffleHog-action@v1.1.0
+        with:
+          path: .
+      - name: Send Slack alert
+        if: ${{ steps.scan-for-secrets.outputs.has_secrets == 'true' }}
+        uses: rtCamp/action-slack-notify@v2.1.0
+        with:
+          status: "danger"
+          author_name: ${{ github.actor }}
+          title: "Secrets found in PR ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${{ github.event.number }}"
+          text: ${{ steps.scan-for-secrets.outputs.results }}
+        env:
+          SLACK_WEBHOOK: https://hooks.slack.com/services/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
