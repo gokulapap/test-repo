@@ -18,5 +18,5 @@ jobs:
           title: "Secrets found in PR ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${{ github.event.number }}"
           text: ${{ steps.scan-for-secrets.outputs.results }}
         env:
-          SLACK_WEBHOOK: https://hooks.slack.com/services/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
+          SLACK_WEBHOOK: "https://hooks.slack.com/services/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"
           
