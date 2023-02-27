@@ -1,7 +1,10 @@
 import requests
 import sys
 
+
 webhook_url = sys.argv[1]
+repo_url = sys.argv[3]
+pr_num = sys.argv[4]
 
 f = open(sys.argv[2], "r")
 code_snippet = f.read()
