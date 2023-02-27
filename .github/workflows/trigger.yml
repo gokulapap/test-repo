@@ -23,32 +23,16 @@ jobs:
           repo = g.get_repo("${{ github.repository }}")
           pr = repo.get_pull(${PR_NUMBER})
           files = pr.get_files()
-          f = open("added_code.txt", "w")
+          f = open("code.txt", "w")
           for file in files:
               f.write(f"Changes in file {file.filename}:")
               f.write(file.patch)
           f.close()
           EOF
-      - name: Send Slack message with added code
+      - name: Send Slack alert
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
         run: |
-          python alerter.py $SLACK_WEBHOOK_URL added_code.txt
-#       - name: Upload added code as an artifact
-#         uses: actions/upload-artifact@v2
-#         with:
-#           name: added_code
-#           path: added_code.txt
-  grep_secret:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Python environment
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
-      - name: Install dependencies
-        run: pip install diff-match-patch
-      - name: Extract added code
-        run: python extract_added_code.py pr_diff.txt
-        id: extract_code
-        continue-on-error: true
+          python regex.py code.txt
+          python alerter.py $SLACK_WEBHOOK_URL output.txt
+
