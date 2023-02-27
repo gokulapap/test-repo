@@ -1,7 +1,11 @@
+---
 name: Save PR added code to file
 on:
   pull_request:
-    types: [opened, edited, synchronize]
+    types:
+      - opened
+      - edited
+      - synchronize
 jobs:
   echo_changes:
     runs-on: ubuntu-latest
@@ -26,26 +30,27 @@ jobs:
               f.write(file.patch)
           f.close()
           EOF
-    - name: Send Slack message with added code
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-      run: |
-        curl -X POST -H 'Content-type: application/json' --data '{"text":"Latest added code:\n```'$(cat added_code.txt)'```"}' $SLACK_WEBHOOK_URL
-    - name: Upload added code as an artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: added_code
-        path: added_code.txt
+      - name: Send Slack message with added code
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+        run: ""
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"Latest added
+          code:\n```'$(cat added_code.txt)'```"}' $SLACK_WEBHOOK_URL
+      - name: Upload added code as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: added_code
+          path: added_code.txt
   extract_code:
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Python environment
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: pip install diff-match-patch
-    - name: Extract added code
-      run: python extract_added_code.py pr_diff.txt
-      id: extract_code
-      continue-on-error: true
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: pip install diff-match-patch
+      - name: Extract added code
+        run: python extract_added_code.py pr_diff.txt
+        id: extract_code
+        continue-on-error: true
