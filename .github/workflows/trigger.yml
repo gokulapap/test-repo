@@ -1,19 +1,40 @@
-name: Scan for secrets and send Slack alert
-
+name: Save PR added code to file
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
-
+    types: [opened, edited, synchronize]
 jobs:
-  scan-for-secrets:
+  save_code:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Slack Notify
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_WEBHOOK: "https://hooks.slack.com/services/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"
-          SLACK_USERNAME: "gokul"
-          SLACK_ICON: https://www.google.com
-          SLACK_TITLE: Ive published a new release 🚀
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+    - name: Get diff of PR
+      run: git diff --name-only HEAD^ HEAD > pr_diff.txt
+    - name: Extract added code
+      run: python extract_added_code.py pr_diff.txt > added_code.txt
+    - name: Save added code to file
+      run: echo "${{ steps.extract_code.outputs.added_code }}" > added_code.txt
+    - name: Send Slack message with added code
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"Latest added code:\n```'$(cat added_code.txt)'```"}' $SLACK_WEBHOOK_URL
+    - name: Upload added code as an artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: added_code
+        path: added_code.txt
+  extract_code:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Python environment
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: pip install diff-match-patch
+    - name: Extract added code
+      run: python extract_added_code.py pr_diff.txt
+      id: extract_code
+      continue-on-error: true
