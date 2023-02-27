@@ -33,7 +33,7 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
         run: |
-         curl -X POST -H 'Content-type: application/json' --data '{"text":"Latest added code:\nhello world"}' $SLACK_WEBHOOK_URL
+          python alerter.py $SLACK_WEBHOOK_URL added_code.txt
       - name: Upload added code as an artifact
         uses: actions/upload-artifact@v2
         with:
