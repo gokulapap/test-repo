@@ -1,4 +1,4 @@
-name: Save PR added code to file
+name: Check for exposed secrets in the PR
 on:
   pull_request:
     types:
@@ -6,7 +6,7 @@ on:
       - edited
       - synchronize
 jobs:
-  echo_changes:
+  fetch_code:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,7 +39,7 @@ jobs:
         with:
           name: added_code
           path: added_code.txt
-  extract_code:
+  grep_secret:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python environment
