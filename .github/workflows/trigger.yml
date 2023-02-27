@@ -3,18 +3,29 @@ on:
   pull_request:
     types: [opened, edited, synchronize]
 jobs:
-  save_code:
+  echo_changes:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.pull_request.head.ref }}
-    - name: Get diff of PR
-      run: git diff $(git rev-parse --short "$GITHUB_SHA")^..$(git rev-parse --short "$GITHUB_SHA") > pr_diff.txt
-    - name: Extract added code
-      run: python extract_added_code.py pr_diff.txt > added_code.txt
-    - name: Save added code to file
-      run: echo "${{ steps.extract_code.outputs.added_code }}" > added_code.txt
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Echo PR Changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=$(echo "${{ github.event.pull_request.number }}")
+          pip install PyGithub
+          python - <<EOF > changes.txt
+          from github import Github
+          g = Github("${{ secrets.GITHUB_TOKEN }}")
+          repo = g.get_repo("${{ github.repository }}")
+          pr = repo.get_pull(${PR_NUMBER})
+          files = pr.get_files()
+          f = open("added_code.txt", "w")
+          for file in files:
+              f.write(f"Changes in file {file.filename}:")
+              f.write(file.patch)
+          f.close()
+          EOF
     - name: Send Slack message with added code
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
