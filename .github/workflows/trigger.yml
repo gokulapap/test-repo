@@ -10,13 +10,13 @@ jobs:
         uses: actions/checkout@v2
       - name: Echo PR Changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           PR_NUMBER=$(echo "${{ github.event.pull_request.number }}")
           pip install PyGithub
           python - <<EOF > changes.txt
           from github import Github
-          g = Github("${{ secrets.GITHUB_TOKEN }}")
+          g = Github("${{ secrets.PAT_TOKEN }}")
           repo = g.get_repo("${{ github.repository }}")
           pr = repo.get_pull(${PR_NUMBER})
           files = pr.get_files()
