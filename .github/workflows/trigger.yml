@@ -34,11 +34,11 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
         run: |
           python alerter.py $SLACK_WEBHOOK_URL added_code.txt
-      - name: Upload added code as an artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: added_code
-          path: added_code.txt
+#       - name: Upload added code as an artifact
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: added_code
+#           path: added_code.txt
   grep_secret:
     runs-on: ubuntu-latest
     steps:
