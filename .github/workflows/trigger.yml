@@ -32,8 +32,8 @@ jobs:
       - name: Send Slack message with added code
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-        run: ""
-        curl -X POST -H 'Content-type: application/json' --data '{"text":"Latest added
+        run: |
+         curl -X POST -H 'Content-type: application/json' --data '{"text":"Latest added
           code:\n```'$(cat added_code.txt)'```"}' $SLACK_WEBHOOK_URL
       - name: Upload added code as an artifact
         uses: actions/upload-artifact@v2
