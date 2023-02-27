@@ -10,7 +10,7 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.head.ref }}
     - name: Get diff of PR
-      run: git diff --word-diff origin/main..branch-1 > pr_diff.txt
+      run: git diff $(git rev-parse --short "$GITHUB_SHA")^..$(git rev-parse --short "$GITHUB_SHA") > pr_diff.txt
     - name: Extract added code
       run: python extract_added_code.py pr_diff.txt > added_code.txt
     - name: Save added code to file
