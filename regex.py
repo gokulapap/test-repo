@@ -14,17 +14,16 @@ bearer_auth_matches = re.findall(bearer_auth_pattern, contents)
 
 f = open("output.txt", "w")
 if password_matches or basic_auth_matches or bearer_auth_matches:
-    f.write('Found hardcoded passwords or tokens: \n')
+    f.write('Found hardcoded passwords or tokens: \n\n')
     for match in password_matches:
         key = match[0]
         value = match[2]
-        f.write(f"{key}: {value}")
+        f.write(f"{key}: {value}\n")
     for match in basic_auth_matches:
         value = match[1]
-        f.write(f"Authorization: Basic {value}")
+        f.write(f"Authorization: Basic {value}\n")
     for match in bearer_auth_matches:
         value = match[1]
-        f.write(f"Authorization: Bearer {value}")
+        f.write(f"Authorization: Bearer {value}\n")
 else:
     pass
-
