@@ -1,3 +1,6 @@
 hello world !
 
 This is a newly added secret !!
+
+This added a new commit and removed !
+Just remove the file and delete !
